@@ -937,14 +937,17 @@ class MIDITokenizer(ABC):
         :param seq: input :class:`miditok.TokSequence`, must have at least one attribute defined.
         """
         if seq.tokens is None:
-            if seq.events is not None:
+            if seq.events is not None and len(seq.events) > 0:
                 seq.tokens = self._events_to_tokens(seq.events)
-            elif seq.ids is not None:
+            elif seq.ids is not None and len(seq.ids) > 0:
                 seq.tokens = self._ids_to_tokens(seq.ids)
-            elif seq.bytes is not None:
+            elif seq.bytes is not None and len(seq.bytes) > 0:
                 seq.tokens = self._bytes_to_tokens(seq.bytes)
         if seq.ids is None:
-            seq.ids = self._tokens_to_ids(seq.tokens)
+            if seq.tokens is not None and len(seq.tokens) > 0:
+                seq.ids = self._tokens_to_ids(seq.tokens)
+            else:
+                seq.ids = []
 
         if self.has_bpe:
             if seq.bytes is None:
@@ -2199,7 +2202,7 @@ class MIDITokenizer(ABC):
     def __eq__(self, other) -> bool:
         r"""Checks if two tokenizers are identical. This is done by comparing their vocabularies,
         and configuration.
-
+6
         :param other: tokenizer to compare.
         :return: True if the vocabulary(ies) are identical, False otherwise.
         """
