@@ -1778,8 +1778,9 @@ class MIDITokenizer(ABC):
                 if logging:
                     print(f"File not found: {midi_path}")
                 continue
-            except Exception:
+            except Exception as e:
                 # known are ValueError, OSError, FileNotFoundError, IOError, EOFError, mido.KeySignatureError
+                print(f"Error while parsing {midi_path}: {e}")
                 continue
 
             # Checks the time division is valid
